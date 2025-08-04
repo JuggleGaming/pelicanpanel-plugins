@@ -2,7 +2,6 @@
 
 namespace Boy132\Tickets;
 
-use App\Models\Role;
 use Filament\Contracts\Plugin;
 use Filament\Panel;
 
@@ -18,8 +17,6 @@ class TicketsPlugin implements Plugin
         $id = str($panel->getId())->title();
 
         $panel->discoverResources(plugin_path($this->getId(), "src/Filament/$id/Resources"), "Boy132\\Tickets\\Filament\\$id\\Resources");
-
-        Role::registerCustomDefaultPermissions('ticket');
     }
 
     public function boot(Panel $panel): void {}
