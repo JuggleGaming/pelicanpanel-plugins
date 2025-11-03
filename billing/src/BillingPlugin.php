@@ -5,10 +5,12 @@ namespace Boy132\Billing;
 use App\Contracts\Plugins\HasPluginSettings;
 use App\Enums\CustomizationKey;
 use App\Filament\App\Resources\Servers\ServerResource;
+use App\Filament\Pages\Auth\EditProfile;
 use App\Traits\EnvironmentWriterTrait;
 use Filament\Contracts\Plugin;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
+use Filament\Navigation\NavigationItem;
 use Filament\Notifications\Notification;
 use Filament\Panel;
 
@@ -34,6 +36,14 @@ class BillingPlugin implements HasPluginSettings, Plugin
 
                 return $navigationType === 'topbar' || $navigationType === 'mixed' || $navigationType === true;
             });
+
+            $panel->navigationItems([
+                NavigationItem::make(fn () => trans('filament-panels::auth/pages/edit-profile.label'))
+                    ->icon('tabler-user-circle')
+                    ->url(fn () => EditProfile::getUrl(panel: 'app'))
+                    ->isActiveWhen(fn () => request()->routeIs(EditProfile::getRouteName()))
+                    ->sort(99),
+            ]);
 
             $panel->clearCachedComponents();
         }
