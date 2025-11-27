@@ -78,7 +78,7 @@ class LegalPages extends Page
                     Action::make('view')
                         ->label(trans('filament-actions::view.single.label'))
                         ->icon('tabler-eye')
-                        ->url("/{$legalPageType->value}", true)
+                        ->url($legalPageType->getUrl(), true)
                         ->visible(fn (Get $get) => $get($legalPageType->value)),
                     Action::make('clear')
                         ->label(trans('legal-pages::strings.clear'))

@@ -8,11 +8,11 @@ use Exception;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Infolists\Components\TextEntry;
-use Filament\Pages\SimplePage;
+use Filament\Pages\Page;
 use Filament\Schemas\Components\Component;
 use Filament\Support\Enums\Width;
 
-abstract class BaseLegalPage extends SimplePage implements HasForms
+abstract class BaseLegalPage extends Page implements HasForms
 {
     use InteractsWithForms;
 
