@@ -2,11 +2,11 @@
 
 namespace Boy132\PlayerCounter\Policies;
 
-use App\Policies\DefaultPolicies;
+use App\Policies\DefaultAdminPolicies;
 
 class GameQueryPolicy
 {
-    use DefaultPolicies;
+    use DefaultAdminPolicies;
 
     protected string $modelName = 'game_query';
 }

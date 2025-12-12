@@ -2,11 +2,11 @@
 
 namespace Boy132\Billing\Policies;
 
-use App\Policies\DefaultPolicies;
+use App\Policies\DefaultAdminPolicies;
 
 class CustomerPolicy
 {
-    use DefaultPolicies;
+    use DefaultAdminPolicies;
 
     protected string $modelName = 'customer';
 }
