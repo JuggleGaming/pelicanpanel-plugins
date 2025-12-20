@@ -20,11 +20,13 @@ class PlayerCounterSeeder extends Seeder
             if (in_array('minecraft', $tags)) {
                 EggGameQuery::firstOrCreate([
                     'egg_id' => $egg->id,
+                ], [
                     'game_query_id' => $minecraftQuery->id,
                 ]);
             } elseif (in_array('source', $tags)) {
                 EggGameQuery::firstOrCreate([
                     'egg_id' => $egg->id,
+                ], [
                     'game_query_id' => $sourceQuery->id,
                 ]);
             }

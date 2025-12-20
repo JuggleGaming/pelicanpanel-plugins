@@ -1,7 +1,5 @@
 <?php
 
-use App\Models\Server;
-use App\Models\User;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -18,9 +16,12 @@ return new class extends Migration
             $table->text('description')->nullable();
             $table->boolean('is_answered')->default(false);
             $table->text('answer')->nullable();
-            $table->foreignIdFor(Server::class, 'server_id')->constrained()->cascadeOnDelete();
-            $table->foreignIdFor(User::class, 'author_id')->nullable()->constrained('users')->nullOnDelete();
-            $table->foreignIdFor(User::class, 'assigned_user_id')->nullable()->constrained('users')->nullOnDelete();
+            $table->unsignedInteger('server_id');
+            $table->foreign('server_id')->references('id')->on('servers')->cascadeOnDelete();
+            $table->unsignedInteger('author_id');
+            $table->foreign('author_id')->references('id')->on('users')->nullOnDelete();
+            $table->unsignedInteger('assigned_user_id');
+            $table->foreign('assigned_user_id')->references('id')->on('users')->nullOnDelete();
             $table->timestamps();
         });
     }

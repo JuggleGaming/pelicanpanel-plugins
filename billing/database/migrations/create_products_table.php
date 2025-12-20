@@ -1,6 +1,5 @@
 <?php
 
-use App\Models\Egg;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -23,7 +22,8 @@ return new class extends Migration
             $table->unsignedInteger('allocation_limit')->default(0);
             $table->unsignedInteger('database_limit')->default(0);
             $table->unsignedInteger('backup_limit')->default(0);
-            $table->foreignIdFor(Egg::class)->constrained()->cascadeOnDelete();
+            $table->unsignedInteger('egg_id');
+            $table->foreign('egg_id')->references('id')->on('eggs')->cascadeOnDelete();
             $table->timestamps();
         });
     }

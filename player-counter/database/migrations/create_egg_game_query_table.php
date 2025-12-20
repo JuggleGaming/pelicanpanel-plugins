@@ -1,6 +1,5 @@
 <?php
 
-use App\Models\Egg;
 use Boy132\PlayerCounter\Models\GameQuery;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
@@ -11,7 +10,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('egg_game_query', function (Blueprint $table) {
-            $table->foreignIdFor(Egg::class, 'egg_id')->constrained()->cascadeOnDelete();
+            $table->unsignedInteger('egg_id');
+            $table->foreign('egg_id')->references('id')->on('eggs')->cascadeOnDelete();
+
             $table->foreignIdFor(GameQuery::class, 'game_query_id')->constrained()->cascadeOnDelete();
 
             $table->unique('egg_id');

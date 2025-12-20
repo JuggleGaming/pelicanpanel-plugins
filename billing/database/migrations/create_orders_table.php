@@ -1,6 +1,5 @@
 <?php
 
-use App\Models\Server;
 use Boy132\Billing\Enums\OrderStatus;
 use Boy132\Billing\Models\Customer;
 use Boy132\Billing\Models\ProductPrice;
@@ -20,7 +19,8 @@ return new class extends Migration
             $table->timestamp('expires_at')->nullable();
             $table->foreignIdFor(Customer::class)->constrained()->cascadeOnDelete();
             $table->foreignIdFor(ProductPrice::class)->constrained()->cascadeOnDelete();
-            $table->foreignIdFor(Server::class)->nullable()->constrained()->nullOnDelete();
+            $table->unsignedInteger('server_id')->nullable();
+            $table->foreign('server_id')->references('id')->on('servers')->nullOnDelete();
             $table->timestamps();
         });
     }
