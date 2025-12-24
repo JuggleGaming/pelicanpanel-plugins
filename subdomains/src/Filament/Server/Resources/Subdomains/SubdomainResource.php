@@ -111,7 +111,7 @@ class SubdomainResource extends Resource
                     ->preload()
                     ->searchable(),
                 Hidden::make('record_type')
-                    ->state(function () {
+                    ->default(function () {
                         /** @var Server $server */
                         $server = Filament::getTenant();
 
