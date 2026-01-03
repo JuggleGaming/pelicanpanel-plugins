@@ -40,7 +40,16 @@ class PlayersPage extends Page implements HasTable
         /** @var Server $server */
         $server = Filament::getTenant();
 
-        return parent::canAccess() && $server->allocation && $server->egg->gameQuery()->exists(); // @phpstan-ignore method.notFound
+        if (!$server->allocation || $server->allocation->ip === '0.0.0.0' || $server->allocation->ip === '::') {
+            return false;
+        }
+
+        // @phpstan-ignore method.notFound
+        if (!$server->egg->gameQuery()->exists()) {
+            return false;
+        }
+
+        return parent::canAccess();
     }
 
     public static function getNavigationLabel(): string
