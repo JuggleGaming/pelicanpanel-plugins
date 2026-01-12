@@ -3,6 +3,8 @@
 namespace Boy132\Subdomains\Models;
 
 use App\Models\Server;
+use Boy132\Subdomains\Enums\SRVServiceType;
+use Exception;
 use Filament\Support\Contracts\HasLabel;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Model;
@@ -33,14 +35,6 @@ class Subdomain extends Model implements HasLabel
     {
         parent::boot();
 
-        static::created(function (self $model) {
-            $model->createOnCloudflare();
-        });
-
-        static::updated(function (self $model) {
-            $model->updateOnCloudflare();
-        });
-
         static::deleted(function (self $model) {
             $model->deleteOnCloudflare();
         });
@@ -61,22 +55,56 @@ class Subdomain extends Model implements HasLabel
         return $this->name . '.' . $this->domain->name;
     }
 
-    protected function createOnCloudflare(): void
+    /** @throws Exception */
+    public function upsertOnCloudflare(): void
     {
-        if (!$this->server->allocation || $this->server->allocation->ip === '0.0.0.0' || $this->server->allocation->ip === '::') {
-            return;
+        if (!$this->server->allocation) {
+            throw new Exception('Server has no allocation');
         }
 
-        if (!$this->cloudflare_id) {
-            // @phpstan-ignore staticMethod.notFound
-            $response = Http::cloudflare()->post("zones/{$this->domain->cloudflare_id}/dns_records", [
-                'name' => $this->name,
-                'ttl' => 120,
+        $payload = [
+            'name' => $this->name,
+            'type' => $this->record_type,
+            'comment' => 'Created by Pelican Subdomains plugin',
+            'content' => $this->server->allocation->ip,
+            'proxied' => false,
+        ];
+
+        if ($this->record_type === 'SRV') {
+            $srvTarget = $this->server->node->srv_target; // @phpstan-ignore property.notFound
+
+            if (!$srvTarget) {
+                throw new Exception('Node has no SRV target');
+            }
+
+            $srvServiceType = SRVServiceType::fromServer($this->server);
+
+            if (!$srvServiceType) {
+                throw new Exception('Server has no SRV type');
+            }
+
+            $payload = [
+                'name' => "$srvServiceType->value.$this->name",
                 'type' => $this->record_type,
                 'comment' => 'Created by Pelican Subdomains plugin',
-                'content' => $this->server->allocation->ip,
+                'data' => [
+                    'port' => $this->server->allocation->port,
+                    'priority' => 0,
+                    'target' => $srvTarget,
+                    'weight' => 0,
+                ],
                 'proxied' => false,
-            ])->json();
+            ];
+        } else {
+            if ($this->server->allocation->ip === '0.0.0.0' || $this->server->allocation->ip === '::') {
+                throw new Exception('Server has invalid allocation ip (0.0.0.0 or ::)');
+            }
+        }
+
+        if ($this->cloudflare_id) {
+            $response = Http::cloudflare()->patch("zones/{$this->domain->cloudflare_id}/dns_records/$this->cloudflare_id", $payload)->json();
+        } else {
+            $response = Http::cloudflare()->post("zones/{$this->domain->cloudflare_id}/dns_records", $payload)->json();
 
             if ($response['success']) {
                 $dnsRecord = $response['result'];
@@ -86,32 +114,18 @@ class Subdomain extends Model implements HasLabel
                 ]);
             }
         }
-    }
 
-    protected function updateOnCloudflare(): void
-    {
-        if (!$this->server->allocation || $this->server->allocation->ip === '0.0.0.0' || $this->server->allocation->ip === '::') {
-            return;
-        }
-
-        if ($this->cloudflare_id) {
-            // @phpstan-ignore staticMethod.notFound
-            Http::cloudflare()->patch("zones/{$this->domain->cloudflare_id}/dns_records/{$this->cloudflare_id}", [
-                'name' => $this->name,
-                'ttl' => 120,
-                'type' => $this->record_type,
-                'comment' => 'Created by Pelican Subdomains plugin',
-                'content' => $this->server->allocation->ip,
-                'proxied' => false,
-            ]);
+        if (!$response['success']) {
+            if ($response['errors'] && count($response['errors']) > 0) {
+                throw new Exception($response['errors'][0]['message']);
+            }
         }
     }
 
     protected function deleteOnCloudflare(): void
     {
         if ($this->cloudflare_id) {
-            // @phpstan-ignore staticMethod.notFound
-            Http::cloudflare()->delete("zones/{$this->domain->cloudflare_id}/dns_records/{$this->cloudflare_id}");
+            Http::cloudflare()->delete("zones/{$this->domain->cloudflare_id}/dns_records/$this->cloudflare_id");
         }
     }
 }
