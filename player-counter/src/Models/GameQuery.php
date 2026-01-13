@@ -44,17 +44,23 @@ class GameQuery extends Model
     /** @return array<string, mixed> */
     public function runQuery(Allocation $allocation): array
     {
-        $ip = is_ipv6($allocation->ip) ? '[' . $allocation->ip . ']' : $allocation->ip;
-        $port = $allocation->port + ($this->query_port_offset ?? 0);
-        $host = $ip . ':' . $port;
+        $host = (is_ipv6($allocation->ip) ? '[' . $allocation->ip . ']' : $allocation->ip) . ':' . $allocation->port;
 
         try {
-            $gameQ = new GameQ();
-
-            $gameQ->addServer([
+            $data = [
                 'type' => $this->query_type->value,
                 'host' => $host,
-            ]);
+            ];
+
+            if ($this->query_port_offset) {
+                $data['options'] = [
+                    'query_port' => $allocation->port + $this->query_port_offset,
+                ];
+            }
+
+            $gameQ = new GameQ();
+
+            $gameQ->addServer($data);
 
             $gameQ->setOption('debug', config('app.debug'));
 
