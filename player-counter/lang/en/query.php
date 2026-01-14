@@ -22,7 +22,7 @@ return [
     'remove_from_ops' => 'Remove from OPs',
 
     'use_alias' => 'Use allocation alias?',
-    'use_alias_hint' => 'If checked the allocation alias will be used instead of the ip for queries',
+    'use_alias_hint' => 'If checked, queries will use the allocation alias instead of the ip',
 
     'table' => [
         'no_players' => 'No players found',
