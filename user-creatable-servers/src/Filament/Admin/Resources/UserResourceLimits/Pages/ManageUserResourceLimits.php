@@ -14,7 +14,9 @@ class ManageUserResourceLimits extends ManageRecords
     {
         return [
             CreateAction::make()
-                ->createAnother(false),
+                ->createAnother(false)
+                ->hiddenLabel()
+                ->icon('tabler-plus'),
         ];
     }
 }

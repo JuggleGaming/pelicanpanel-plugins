@@ -18,6 +18,8 @@ class ManageCloudflareDomains extends ManageRecords
         return [
             CreateAction::make()
                 ->createAnother(false)
+                ->hiddenLabel()
+                ->icon('tabler-plus')
                 ->hidden(fn () => is_null(config('subdomains.token')))
                 ->using(function (array $data) {
                     try {

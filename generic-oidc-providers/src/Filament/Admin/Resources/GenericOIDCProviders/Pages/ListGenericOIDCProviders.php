@@ -13,7 +13,10 @@ class ListGenericOIDCProviders extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            CreateAction::make(),
+            CreateAction::make()
+                ->createAnother(false)
+                ->hiddenLabel()
+                ->icon('tabler-plus'),
         ];
     }
 }

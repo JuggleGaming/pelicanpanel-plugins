@@ -18,7 +18,9 @@ class ListTickets extends ListRecords
     {
         return [
             CreateAction::make()
-                ->createAnother(false),
+                ->createAnother(false)
+                ->hiddenLabel()
+                ->icon('tabler-plus'),
         ];
     }
 

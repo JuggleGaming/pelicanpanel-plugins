@@ -102,10 +102,12 @@ class LegalPages extends Page
     {
         return [
             Action::make('save')
-                ->label(trans('filament-panels::resources/pages/edit-record.form.actions.save.label'))
                 ->authorize(fn () => user()?->can('update legalPage'))
+                ->hiddenLabel()
                 ->action('save')
-                ->keyBindings(['mod+s']),
+                ->keyBindings(['mod+s'])
+                ->tooltip(trans('filament-panels::resources/pages/edit-record.form.actions.save.label'))
+                ->icon('tabler-device-floppy'),
         ];
     }
 

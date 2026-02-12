@@ -59,7 +59,8 @@ class SubdomainRelationManager extends RelationManager
             ])
             ->headerActions([
                 Action::make('change_limit')
-                    ->label(trans('subdomains::strings.change_limit'))
+                    ->tooltip(trans('subdomains::strings.change_limit'))
+                    ->icon('tabler-filter-2-edit')
                     ->schema([
                         TextInput::make('limit')
                             ->label(trans('subdomains::strings.limit'))

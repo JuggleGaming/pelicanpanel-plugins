@@ -109,14 +109,15 @@ class ServerResourcePage extends ServerFormPage
 
         return [
             Action::make('save')
-                ->label(trans('filament-panels::resources/pages/edit-record.form.actions.save.label'))
+                ->hiddenLabel()
                 ->action('save')
-                ->formId('form')
-                ->keyBindings(['mod+s']),
+                ->keyBindings(['mod+s'])
+                ->tooltip(trans('filament-panels::resources/pages/edit-record.form.actions.save.label'))
+                ->icon('tabler-device-floppy'),
             Action::make('delete_server')
                 ->visible(fn () => config('user-creatable-servers.can_users_delete_servers'))
                 ->authorize(fn () => $server->owner_id === auth()->user()->id || auth()->user()->can('delete server', $server))
-                ->label(trans('user-creatable-servers::strings.modals.delete_server'))
+                ->tooltip(trans('user-creatable-servers::strings.modals.delete_server'))
                 ->color('danger')
                 ->icon('tabler-trash')
                 ->requiresConfirmation()

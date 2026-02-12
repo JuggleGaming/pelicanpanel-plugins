@@ -126,7 +126,8 @@ class RustUModPluginsPage extends Page implements HasTable
     {
         return [
             Action::make('open_folder')
-                ->label(fn () => 'Open plugins folder')
+                ->tooltip(fn () => 'Open plugins folder')
+                ->icon('tabler-folder-open')
                 ->url(fn () => ListFiles::getUrl(['path' => 'oxide/plugins']), true),
         ];
     }

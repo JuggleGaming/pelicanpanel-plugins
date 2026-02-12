@@ -62,6 +62,8 @@ class MessagesRelationManager extends RelationManager
             ->headerActions([
                 CreateAction::make()
                     ->createAnother(false)
+                    ->hiddenLabel()
+                    ->icon('tabler-plus')
                     ->schema([
                         MarkdownEditor::make('message')
                             ->label(trans_choice('tickets::tickets.message', 1))

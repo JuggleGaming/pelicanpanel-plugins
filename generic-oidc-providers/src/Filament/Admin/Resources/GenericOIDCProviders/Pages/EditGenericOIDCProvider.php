@@ -3,6 +3,7 @@
 namespace Boy132\GenericOIDCProviders\Filament\Admin\Resources\GenericOIDCProviders\Pages;
 
 use Boy132\GenericOIDCProviders\Filament\Admin\Resources\GenericOIDCProviders\GenericOIDCProviderResource;
+use Filament\Actions\Action;
 use Filament\Actions\DeleteAction;
 use Filament\Resources\Pages\EditRecord;
 
@@ -19,7 +20,12 @@ class EditGenericOIDCProvider extends EditRecord
     {
         return [
             DeleteAction::make(),
-            $this->getSaveFormAction()->formId('form'),
+            Action::make('save')
+                ->hiddenLabel()
+                ->action('save')
+                ->keyBindings(['mod+s'])
+                ->tooltip(trans('filament-panels::resources/pages/edit-record.form.actions.save.label'))
+                ->icon('tabler-device-floppy'),
         ];
     }
 }
